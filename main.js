@@ -10,17 +10,22 @@ fs.readdirSync(path.join(__dirname, 'module'))
     if (!file.endsWith('.js')) return
     let fileModule = require(path.join(__dirname, 'module', file))
     obj[file.split('.').shift()] = function (data) {
-      if (typeof data.cookie === 'string') {
-        data.cookie = cookieToJson(data.cookie)
-      }
-      return fileModule(
-        {
+      let paramsObj = {}
+      if (data !== undefined) {
+        if (typeof data.cookie === 'string') {
+          data.cookie = cookieToJson(data.cookie)
+        }
+        paramsObj = {
           ...data,
           cookie: data.cookie ? data.cookie : {},
-        },
+        }
+      }
+      return fileModule(
+        paramsObj,
         request,
       )
     }
   })
+console.log('objobj', obj);
 
 module.exports = obj
